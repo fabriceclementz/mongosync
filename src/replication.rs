@@ -1,4 +1,4 @@
-use anyhow::Context;
+use anyhow::{Context, Result};
 use log::debug;
 use log::info;
 use mongodb::options::ChangeStreamOptions;
@@ -11,10 +11,12 @@ use mongodb::{
 };
 use serde::Serialize;
 
+use crate::config::SinksConfig::MongoDB;
+use crate::config::SinksConfig::Stdout;
 use crate::config::{Config, SourceConfig};
 
-pub async fn run_replication(config: &Config) -> anyhow::Result<()> {
-    info!("Running replication");
+pub async fn run_replication(config: &Config) -> Result<()> {
+    info!("Starting replication...");
     let client = get_source_client(&config.source)
         .await
         .context("Failed to get a handle to the source database")?;
@@ -75,8 +77,22 @@ pub async fn run_replication(config: &Config) -> anyhow::Result<()> {
 
             match msg {
                 Some(msg) => {
-                    let json = serde_json::to_string_pretty(&msg).unwrap();
-                    println!("{}", json);
+                    for sink in &config.sinks {
+                        match sink {
+                            Stdout(options) => {
+                                let json = match options.pretty {
+                                    Some(pretty) if pretty == true => {
+                                        serde_json::to_string_pretty(&msg)
+                                            .context("Cannot pretty serialize message to JSON")?
+                                    }
+                                    _ => serde_json::to_string(&msg)
+                                        .context("Cannot serialize message to JSON")?,
+                                };
+                                println!("{}", json);
+                            }
+                            MongoDB(_) => {}
+                        }
+                    }
                 }
                 None => {}
             }
@@ -88,7 +104,7 @@ pub async fn run_replication(config: &Config) -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn get_source_client(source: &SourceConfig) -> anyhow::Result<Client> {
+async fn get_source_client(source: &SourceConfig) -> Result<Client> {
     // Parse a connection string into an options struct.
     let mut client_options = ClientOptions::parse(&source.connection_uri).await?;
 

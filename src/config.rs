@@ -3,7 +3,7 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub source: SourceConfig,
-    pub destinations: Vec<DestinationConfig>,
+    pub sinks: Vec<SinksConfig>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -14,7 +14,7 @@ pub struct SourceConfig {
 
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
-pub enum DestinationConfig {
+pub enum SinksConfig {
     #[serde(rename = "stdout")]
     Stdout(StdoutConfig),
     #[serde(rename = "mongodb")]
@@ -22,7 +22,9 @@ pub enum DestinationConfig {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct StdoutConfig {}
+pub struct StdoutConfig {
+    pub pretty: Option<bool>,
+}
 
 #[derive(Debug, Deserialize)]
 pub struct MongoDBConfig {

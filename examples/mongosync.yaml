@@ -1,7 +1,7 @@
 source:
   connection_uri: mongodb://localhost:27017/?replicaSet=rs0
   database: test
-destinations:
+sinks:
   - type: stdout
   # - type: mongodb
   #   connection_uri: mongodb://root:password@localhost:27020/?authSource=admin

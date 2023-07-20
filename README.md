@@ -6,8 +6,9 @@ Sync your MongoDB collections in realtime using MongoDB changes streams.
 source:
   connection_uri: <string>
   database: <string>
-destinations:
+sinks:
   - type: stdout
+    pretty: true
 ```
 
 ## Development

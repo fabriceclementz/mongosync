@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:5
+    command: ['--replSet', 'rs0']
+    ports:
+      - 27017:27017
+    volumes:
+      - ./db/mongodb-1/data:/data/db
+      - ./db/mongodb-1/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js

@@ -1,5 +1,7 @@
 # Mongosync
 
+> ⚠️ This project is a work in progress, it's not recommended for production usage.
+
 Listens to changes in a MongoDB database and broadcasts them over many destinations.
 
 ## Sinks

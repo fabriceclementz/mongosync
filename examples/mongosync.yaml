@@ -3,5 +3,7 @@ source:
   database: test
 sinks:
   - type: stdout
-  # - type: mongodb
-  #   connection_uri: mongodb://root:password@localhost:27020/?authSource=admin
+  - type: file
+    path: ./mongosync-events.log
+  - type: mongodb
+    connection_uri: mongodb://root:password@localhost:27018

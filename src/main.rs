@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use mongosync::cli::Args;
 use mongosync::config::Config;
-use mongosync::replication::run_replication;
+use mongosync::replication;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -15,7 +15,7 @@ async fn main() -> Result<()> {
     let config_file = File::open(&args.config).context("Failed to read mongosync config file")?;
     let config: Config = serde_yaml::from_reader(config_file).context("Bad config file format")?;
 
-    let _ = run_replication(&config)
+    replication::run(&config)
         .await
         .context("Failed to run realtime replication")?;
 

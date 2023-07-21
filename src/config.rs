@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -12,21 +14,28 @@ pub struct SourceConfig {
     pub database: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 #[serde(tag = "type")]
 pub enum SinksConfig {
     #[serde(rename = "stdout")]
     Stdout(StdoutConfig),
+    #[serde(rename = "file")]
+    File(FileConfig),
     #[serde(rename = "mongodb")]
     MongoDB(MongoDBConfig),
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct StdoutConfig {
     pub pretty: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
+pub struct FileConfig {
+    pub path: PathBuf,
+}
+
+#[derive(Debug, Clone, Deserialize)]
 pub struct MongoDBConfig {
     pub connection_uri: String,
 }
